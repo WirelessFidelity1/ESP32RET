@@ -3,6 +3,8 @@ ESP32RET (Saab NG9-3 single wire I-BUS 33.3kbps)
 
 The original ESP32RET repository did not seem to work with 33.3kbps bus speed. So this fork forces 33.3kbps speed (it is hardcoded throughout)
 
+If you want to view the P-BUS, you should use this repository, use the original one for ESP32RET, it should work as is with the 500kbps speed.
+
 ESP32RET allows you to use a ESP32 as a GVRET serial device. This can be used with the tool SavvyCAN to send/receive frames to the vehicle's 
 CANBUS network. Originally, I used a Arduino Nano + MCP2515 to view the I-BUS, but the ESP32 offers much more power and capability. 
 
