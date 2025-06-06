@@ -1,4 +1,22 @@
-ESP32RET
+ESP32RET (Saab 9-3 single wire I-BUS 33.3kbps)
+=======
+
+The original ESP32RET repository did not seem to work with 33.3kbps bus speed. So this fork forces 33.3kbps speed (it is hardcoded throughout)
+
+There are two main CANBUS networks on the Saab 9-3 
+
+
+
+
+
+
+
+ 
+
+ 
+ 
+
+Original README:
 =======
 
 Reverse Engineering Tool running on ESP32 based hardware. Supports both EVTV ESP32 and Macchina A0
