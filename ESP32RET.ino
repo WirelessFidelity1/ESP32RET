@@ -215,7 +215,8 @@ void loadSettings()
     {
         Logger::console("Running on EVTV ESP32-S3 Board");
         canBuses[0] = &CAN0;
-        canBuses[1] = &CAN1;
+        CAN0.setCANPins(GPIO_NUM_4, GPIO_NUM_5);
+        // canBuses[1] = &CAN1;
         //CAN1.setINTPin(3);
         //CAN1.setCSPin(10);
         SysSettings.LED_CANTX = 255;//18;
@@ -230,7 +231,7 @@ void loadSettings()
         SysSettings.lawicelMode = false;
         SysSettings.lawicellExtendedMode = false;
         SysSettings.lawicelTimestamping = false;
-        SysSettings.numBuses = 2;
+        SysSettings.numBuses = 1;
         SysSettings.isWifiActive = false;
         SysSettings.isWifiConnected = false;
         strcpy(deviceName, EVTV_NAME);
@@ -258,13 +259,13 @@ void loadSettings()
     for (int i = 0; i < SysSettings.numBuses; i++)
     {
         sprintf(buff, "can%ispeed", i);
-        settings.canSettings[i].nomSpeed = nvPrefs.getUInt(buff, 500000);
+        settings.canSettings[i].nomSpeed = nvPrefs.getUInt(buff, 33333);
         sprintf(buff, "can%i_en", i);
         settings.canSettings[i].enabled = nvPrefs.getBool(buff, (i < 2)?true:false);
         sprintf(buff, "can%i-listenonly", i);
         settings.canSettings[i].listenOnly = nvPrefs.getBool(buff, false);
         sprintf(buff, "can%i-fdspeed", i);
-        settings.canSettings[i].fdSpeed = nvPrefs.getUInt(buff, 5000000);
+        settings.canSettings[i].fdSpeed = nvPrefs.getUInt(buff, 33333);
         sprintf(buff, "can%i-fdmode", i);
         settings.canSettings[i].fdMode = nvPrefs.getBool(buff, false);
     }
@@ -274,6 +275,10 @@ void loadSettings()
     Logger::setLoglevel((Logger::LogLevel)settings.logLevel);
 
     for (int rx = 0; rx < NUM_BUSES; rx++) SysSettings.lawicelBusReception[rx] = true; //default to showing messages on RX 
+
+    for (int i = 0; i < SysSettings.numBuses; i++) {
+        settings.canSettings[i].nomSpeed = 33333;
+    }
 }
 
 void setup()
@@ -286,7 +291,7 @@ void setup()
     Serial.setTxTimeoutMs(2);
 #endif
     Serial.begin(1000000); //for production
-    //Serial.begin(115200); //for testing
+    // Serial.begin(115200); //for testing
     //delay(2000); //just for testing. Don't use in production
 
     espChipRevision = ESP.getChipRevision();
@@ -297,6 +302,7 @@ void setup()
     SysSettings.isWifiConnected = false;
 
     loadSettings();
+    CAN0.setCANPins(GPIO_NUM_4, GPIO_NUM_5);
 
     //CAN0.setDebuggingMode(true);
     //CAN1.setDebuggingMode(true);

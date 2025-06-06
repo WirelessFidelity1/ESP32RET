@@ -36,6 +36,8 @@ CANManager::CANManager()
 
 }
 
+const uint32_t saabSpeed = 33333;  // 33.333 kbps
+
 void CANManager::setup()
 {
     for (int i = 0; i < SysSettings.numBuses; i++)
@@ -44,8 +46,8 @@ void CANManager::setup()
         {
             if ((settings.canSettings[i].fdMode == 0) || !canBuses[i]->supportsFDMode())
             {
-                canBuses[i]->begin(settings.canSettings[i].nomSpeed);
-                Serial.printf("Enabled CAN%u with speed %u\n", i, settings.canSettings[i].nomSpeed);
+                canBuses[i]->begin(saabSpeed);
+                Serial.printf("Enabled CAN%u with speed %u\n", i, saabSpeed);
                 if ( (i == 0) && (settings.systemType == 2) )
                 {
                   digitalWrite(SW_EN, HIGH); //MUST be HIGH to use CAN0 channel
@@ -61,9 +63,9 @@ void CANManager::setup()
             }
             else
             {
-                canBuses[i]->beginFD(settings.canSettings[i].nomSpeed, settings.canSettings[i].fdSpeed);
+                canBuses[i]->beginFD(saabSpeed, saabSpeed);
                 Serial.printf("Enabled CAN1 In FD Mode With Nominal Speed %u and Data Speed %u", 
-                                settings.canSettings[i].nomSpeed, settings.canSettings[i].fdSpeed);
+                                saabSpeed, saabSpeed);
                 canBuses[i]->enable();
             }
 
@@ -101,7 +103,7 @@ void CANManager::setup()
 
     for (int j = 0; j < NUM_BUSES; j++)
     {
-        busLoad[j].bitsPerQuarter = settings.canSettings[j].nomSpeed / 4;
+        busLoad[j].bitsPerQuarter = saabSpeed / 4;
         busLoad[j].bitsSoFar = 0;
         busLoad[j].busloadPercentage = 0;
         if (busLoad[j].bitsPerQuarter == 0) busLoad[j].bitsPerQuarter = 125000;
@@ -183,7 +185,7 @@ void CANManager::loop()
         busLoad[0].busloadPercentage = ((busLoad[0].busloadPercentage * 3) + (((busLoad[0].bitsSoFar * 1000) / busLoad[0].bitsPerQuarter) / 10)) / 4;
         //Force busload percentage to be at least 1% if any traffic exists at all. This forces the LED to light up for any traffic.
         if (busLoad[0].busloadPercentage == 0 && busLoad[0].bitsSoFar > 0) busLoad[0].busloadPercentage = 1;
-        busLoad[0].bitsPerQuarter = settings.canSettings[0].nomSpeed / 4;
+        busLoad[0].bitsPerQuarter = saabSpeed / 4;
         busLoad[0].bitsSoFar = 0;
         if(busLoad[0].busloadPercentage > busLoad[1].busloadPercentage){
             //updateBusloadLED(busLoad[0].busloadPercentage);

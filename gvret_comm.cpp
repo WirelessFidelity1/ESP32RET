@@ -13,9 +13,11 @@ GVRET_Comm_Handler::GVRET_Comm_Handler()
     state = IDLE;
 }
 
+const uint32_t saabSpeed = 33333;  // 33.333 kbps
+
 void GVRET_Comm_Handler::processIncomingByte(uint8_t in_byte)
 {
-    uint32_t busSpeed = 0;
+    const uint32_t busSpeed = 33333;
     uint32_t now = micros();
 
     uint8_t temp8;
@@ -109,15 +111,15 @@ void GVRET_Comm_Handler::processIncomingByte(uint8_t in_byte)
             transmitBuffer[transmitBufferLength++] = 0xF1;
             transmitBuffer[transmitBufferLength++] = 6;
             transmitBuffer[transmitBufferLength++] = settings.canSettings[0].enabled + ((unsigned char) settings.canSettings[0].listenOnly << 4);
-            transmitBuffer[transmitBufferLength++] = settings.canSettings[0].nomSpeed;
-            transmitBuffer[transmitBufferLength++] = settings.canSettings[0].nomSpeed >> 8;
-            transmitBuffer[transmitBufferLength++] = settings.canSettings[0].nomSpeed >> 16;
-            transmitBuffer[transmitBufferLength++] = settings.canSettings[0].nomSpeed >> 24;
+            transmitBuffer[transmitBufferLength++] = saabSpeed;
+            transmitBuffer[transmitBufferLength++] = saabSpeed >> 8;
+            transmitBuffer[transmitBufferLength++] = saabSpeed >> 16;
+            transmitBuffer[transmitBufferLength++] = saabSpeed >> 24;
             transmitBuffer[transmitBufferLength++] = settings.canSettings[1].enabled + ((unsigned char) settings.canSettings[1].listenOnly << 4);
-            transmitBuffer[transmitBufferLength++] = settings.canSettings[1].nomSpeed;
-            transmitBuffer[transmitBufferLength++] = settings.canSettings[1].nomSpeed >> 8;
-            transmitBuffer[transmitBufferLength++] = settings.canSettings[1].nomSpeed >> 16;
-            transmitBuffer[transmitBufferLength++] = settings.canSettings[1].nomSpeed >> 24;
+            transmitBuffer[transmitBufferLength++] = saabSpeed;
+            transmitBuffer[transmitBufferLength++] = saabSpeed >> 8;
+            transmitBuffer[transmitBufferLength++] = saabSpeed >> 16;
+            transmitBuffer[transmitBufferLength++] = saabSpeed >> 24;
             state = IDLE;
             break;
         case PROTO_GET_DEV_INFO:
@@ -254,8 +256,8 @@ void GVRET_Comm_Handler::processIncomingByte(uint8_t in_byte)
                 break;
             case 3:
                 build_int |= in_byte << 24;
-                busSpeed = build_int & 0xFFFFF;
-                if(busSpeed > 1000000) busSpeed = 1000000;
+                // busSpeed = build_int & 0xFFFFF;
+                // if(busSpeed > 1000000) busSpeed = 1000000;
 
                 if(build_int > 0)
                 {
@@ -281,7 +283,6 @@ void GVRET_Comm_Handler::processIncomingByte(uint8_t in_byte)
                         settings.canSettings[0].enabled = true;
                     }
                     //CAN0.set_baudrate(build_int);
-                    settings.canSettings[0].nomSpeed = busSpeed;
 
                 } else { //disable first canbus
                     settings.canSettings[0].enabled = false;
@@ -289,7 +290,7 @@ void GVRET_Comm_Handler::processIncomingByte(uint8_t in_byte)
 
                 if (settings.canSettings[0].enabled)
                 {
-                    canBuses[0]->begin(settings.canSettings[0].nomSpeed, 255);
+                    canBuses[0]->begin(saabSpeed, 255);
                     if (settings.canSettings[0].listenOnly) canBuses[0]->setListenOnlyMode(true);
                     else canBuses[0]->setListenOnlyMode(false);
                     canBuses[0]->watchFor();
@@ -307,8 +308,8 @@ void GVRET_Comm_Handler::processIncomingByte(uint8_t in_byte)
                 break;
             case 7:
                 build_int |= in_byte << 24;
-                busSpeed = build_int & 0xFFFFF;
-                if(busSpeed > 1000000) busSpeed = 1000000;
+                // busSpeed = build_int & 0xFFFFF;
+                // if(busSpeed > 1000000) busSpeed = 1000000;
 
                 if(build_int > 0 && SysSettings.numBuses > 1)
                 {
@@ -334,14 +335,13 @@ void GVRET_Comm_Handler::processIncomingByte(uint8_t in_byte)
                         settings.canSettings[1].enabled = true;
                     }
                     //CAN1.set_baudrate(build_int);
-                    settings.canSettings[1].nomSpeed = busSpeed;
                 } else { //disable first canbus
                     settings.canSettings[1].enabled = false;
                 }
 
                 if (settings.canSettings[1].enabled)
                 {
-                    canBuses[1]->begin(settings.canSettings[1].nomSpeed, 255);
+                    canBuses[1]->begin(saabSpeed, 255);
                     if (settings.canSettings[1].listenOnly) canBuses[1]->setListenOnlyMode(true);
                     else canBuses[1]->setListenOnlyMode(false);
                     canBuses[1]->watchFor();
