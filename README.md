@@ -1,9 +1,63 @@
-ESP32RET (Saab 9-3 single wire I-BUS 33.3kbps)
+ESP32RET (Saab NG9-3 single wire I-BUS 33.3kbps)
 =======
 
 The original ESP32RET repository did not seem to work with 33.3kbps bus speed. So this fork forces 33.3kbps speed (it is hardcoded throughout)
 
-There are two main CANBUS networks on the Saab 9-3 
+ESP32RET allows you to use a ESP32 as a GVRET serial device. This can be used with the tool SavvyCAN to send/receive frames to the vehicle's 
+CANBUS network. Originally, I used a Arduino Nano + MCP2515 to view the I-BUS, but the ESP32 offers much more power and capability. 
+
+Setup Guide
+=======
+
+Requirements:
+
+- SN65HVD230 transciever (the one I used is on a PCB, with pins 3V3, GND, CTX, CRX, CANH, and CANL)
+- ESP32-S3 (ABSOLUTELY MUST BE THE S3 MODEL)
+
+The original ESP32 will not work, as the CAN controller is clocked at 80 Mhz, not allowing speeds below 50kbps or so. The ESP32-S3 has BRP adjustment bits that allow the slow 33.3kbps I-BUS speed to be read. 
+
+Wiring guide: 
+
+| ESP32-S3    | SN65HVD230 |
+| -------- | ------- |
+| 3V3  | 3V3    |
+| GND | GND     |
+| GPIO 5    | CTX    |
+| GPIO 4 | CRX |
+
+CANH (CAN HIGH) on the SN65HVD230 goes to pin 1 (I-BUS) on the OBD2 diagnostic connector
+
+CANL (CAN LOW) on the SN65HVD230 goes to pin 5 (signal ground) on the OBD2 diagnostic connector
+
+Open this repository in the Arduino IDE (or other), make sure you have the required libraries mentioned in the original README, and flash
+to your ESP32-S3. 
+
+Now you should be able to send/receive on the I-BUS on your NG9-3 2003-2011 vehicle, using the SavvyCAN application.
+There are some good tutorials on YouTube on how to use the various features of the program.
+
+
+
+Brief Explanation of NG9-3 CANBUS:
+=======
+
+There are two main CANBUS networks on the Saab 9-3:
+
+2-wire P-BUS (powertrain): This is the main bus, running at 500kbps. ECU, ABS/ESP, and other important modules 
+communicate through this bus. Please be careful with this side, as it controls many important safety/engine parameters.
+This guide does not focus on this bus.
+
+1-wire I-BUS (instruments): This is the slower bus, running at 33.3kbps, over a single-wire layout. Cluster (MIU), windows, seat memory, etc 
+are some things on this bus. This document focuses on interfacing with this bus. 
+
+Few potential ideas that can be achieved through sending/receiving on the I-BUS:
+
+- Read in steering wheel button presses, use input to change song on Bluetooth-connected phone
+- Read in speed value for measurements
+- Automatically change source to AUX by replicating the SRC button frame
+
+
+
+
 
 
 
