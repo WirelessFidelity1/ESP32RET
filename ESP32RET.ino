@@ -215,7 +215,7 @@ void loadSettings()
     {
         Logger::console("Running on EVTV ESP32-S3 Board");
         canBuses[0] = &CAN0;
-        canBuses[1] = &CAN1;
+        CAN0.setCANPins(GPIO_NUM_4, GPIO_NUM_5);
         //CAN1.setINTPin(3);
         //CAN1.setCSPin(10);
         SysSettings.LED_CANTX = 255;//18;
@@ -230,7 +230,7 @@ void loadSettings()
         SysSettings.lawicelMode = false;
         SysSettings.lawicellExtendedMode = false;
         SysSettings.lawicelTimestamping = false;
-        SysSettings.numBuses = 2;
+        SysSettings.numBuses = 1;
         SysSettings.isWifiActive = false;
         SysSettings.isWifiConnected = false;
         strcpy(deviceName, EVTV_NAME);
@@ -297,6 +297,7 @@ void setup()
     SysSettings.isWifiConnected = false;
 
     loadSettings();
+    CAN0.setCANPins(GPIO_NUM_4, GPIO_NUM_5);
 
     //CAN0.setDebuggingMode(true);
     //CAN1.setDebuggingMode(true);
