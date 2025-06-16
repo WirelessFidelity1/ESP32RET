@@ -259,13 +259,13 @@ void loadSettings()
     for (int i = 0; i < SysSettings.numBuses; i++)
     {
         sprintf(buff, "can%ispeed", i);
-        settings.canSettings[i].nomSpeed = nvPrefs.getUInt(buff, 33333);
+        settings.canSettings[i].nomSpeed = nvPrefs.getUInt(buff, 500000);
         sprintf(buff, "can%i_en", i);
         settings.canSettings[i].enabled = nvPrefs.getBool(buff, (i < 2)?true:false);
         sprintf(buff, "can%i-listenonly", i);
         settings.canSettings[i].listenOnly = nvPrefs.getBool(buff, false);
         sprintf(buff, "can%i-fdspeed", i);
-        settings.canSettings[i].fdSpeed = nvPrefs.getUInt(buff, 33333);
+        settings.canSettings[i].fdSpeed = nvPrefs.getUInt(buff, 500000);
         sprintf(buff, "can%i-fdmode", i);
         settings.canSettings[i].fdMode = nvPrefs.getBool(buff, false);
     }
@@ -277,7 +277,7 @@ void loadSettings()
     for (int rx = 0; rx < NUM_BUSES; rx++) SysSettings.lawicelBusReception[rx] = true; //default to showing messages on RX 
 
     for (int i = 0; i < SysSettings.numBuses; i++) {
-        settings.canSettings[i].nomSpeed = 33333;
+        settings.canSettings[i].nomSpeed = 500000;
     }
 }
 

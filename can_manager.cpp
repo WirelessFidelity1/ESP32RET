@@ -36,7 +36,7 @@ CANManager::CANManager()
 
 }
 
-const uint32_t saabSpeed = 33333;  // 33.333 kbps
+const uint32_t saabSpeed = 500000;  // 500 kbps
 
 void CANManager::setup()
 {

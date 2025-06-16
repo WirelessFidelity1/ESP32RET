@@ -13,11 +13,11 @@ GVRET_Comm_Handler::GVRET_Comm_Handler()
     state = IDLE;
 }
 
-const uint32_t saabSpeed = 33333;  // 33.333 kbps
+const uint32_t saabSpeed = 500000;  // 500 kbps
 
 void GVRET_Comm_Handler::processIncomingByte(uint8_t in_byte)
 {
-    const uint32_t busSpeed = 33333;
+    const uint32_t busSpeed = 500000;
     uint32_t now = micros();
 
     uint8_t temp8;
